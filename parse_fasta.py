@@ -21,6 +21,27 @@ def parse_fasta(fa):
         yield (name, ''.join(seq))
 
 
+def order_fasta_to_dict(func):
+    '''
+    order fasta file by sequence length
+    :param fasta_dict:
+    :return:
+    '''
+
+    def wrapper(*args, **kwargs):
+        fasta_dict = func(*args, **kwargs)
+        tmp = sorted(fasta_dict.items(), key=lambda x: len(x[1]), reverse=True)
+        # [(gene_id, seq), (gene_id, seq)]
+
+        result = OrderedDict()
+        for name, seq in tmp:
+            result[name] = seq
+        return result
+
+    return wrapper
+
+
+@order_fasta_to_dict
 def parse_fasta_to_dict(fa):
     tmp_result = defaultdict(list)
     result = dict()
@@ -29,29 +50,11 @@ def parse_fasta_to_dict(fa):
         for line in fin:
             if line.startswith(">"):
                 name = line.rstrip()
-                tmp_result[name]
             else:
                 tmp_result[name].append(line.rstrip())
 
     for key in tmp_result:
         seq = ''.join(tmp_result[key])
         result[key] = seq
-
-    return result
-
-
-def order_seq_length(fasta_dict):
-    '''
-    order fasta file by sequence length
-    :param fasta_dict:
-    :return:
-    '''
-    tmp = sorted(fasta_dict.items(), key=lambda x: len(x[1]), reverse=True)
-    print(tmp)
-    # [(gene_id, seq), (gene_id, seq)]
-
-    result = OrderedDict()
-    for name, seq in tmp:
-        result[name] = seq
 
     return result

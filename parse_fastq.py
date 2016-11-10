@@ -17,5 +17,6 @@ def parse_fastaq(fq):
             qual = fq.readline().rstrip()
             yield (name, seq, strand, qual)
         else:
+            print(line)
             print('the header line does not start with @!.')
             sys.exit("abort!")
