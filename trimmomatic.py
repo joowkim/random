@@ -43,7 +43,7 @@ def run_trimmomatic(f_list, r_list, t, l, o, q):
     for f, r in zip(f_list, r_list):
         fname = f.split(".")[0]
         rname = r.split(".")[0]
-        cmd = 'trimmomatic PE -threads {thread} {for_fq} {rev_fq} {output}/{for_name}.p.fastq.gz unpaired/{for_name}.up.fastq.gz {output}/{rev_name}.p.fastq.gz unpaired/{rev_name}.up.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:{q} MINLEN:{l} AVGQUAL:{q} '.format(
+        cmd = 'trimmomatic PE -threads {thread} -trimlog trim.log {for_fq} {rev_fq} {output}/{for_name}.p.fastq.gz unpaired/{for_name}.up.fastq.gz {output}/{rev_name}.p.fastq.gz unpaired/{rev_name}.up.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:{q} MINLEN:{l} AVGQUAL:{q} '.format(
             thread=t,
             for_fq=f,
             for_name=fname,
