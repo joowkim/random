@@ -4,25 +4,25 @@ import os
 import click
 
 
-def get_file_list(e, s):
-    f1 = s
+def get_file_list(input_dir, exten, sample_type):
+    f1 = sample_type
     r2 = ""
     forward = ""
     reverse = ""
     if f1 == "R1":
         r2 = "R2"
-        forward = r'*{}*.*{}'.format(f1, e)
-        reverse = r'*{}*.*{}'.format(r2, e)
+        forward = r'*{}*.*{}'.format(f1, exten)
+        reverse = r'*{}*.*{}'.format(r2, exten)
     elif f1 == "1":
         r2 = "2"
-        forward = r'*_{}.*{}'.format(f1, e)
-        reverse = r'*_{}.*{}'.format(r2, e)
+        forward = r'*_{}.*{}'.format(f1, exten)
+        reverse = r'*_{}.*{}'.format(r2, exten)
     else:
-        print(e, " is either R1 or 1.")
+        print(exten, " is either R1 or 1.")
         quit()
 
-    forward_list = sorted([i for i in glob.glob(forward)])
-    reverse_list = sorted([i for i in glob.glob(reverse)])
+    forward_list = sorted([os.path.join(input_dir, i) for i in glob.glob(forward)])
+    reverse_list = sorted([os.path.join(input_dir, i) for i in glob.glob(reverse)])
 
     if len(forward_list) != len(reverse_list):
         print("forward fq, reverse fq are different.")
@@ -39,19 +39,19 @@ def get_file_list(e, s):
     return forward_list, reverse_list
 
 
-def run_trimmomatic(f_list, r_list, t, l, o, q):
+def run_trimmomatic(f_list, r_list, threads, lgth, output_dir, qual):
     for f, r in zip(f_list, r_list):
         fname = f.split(".")[0]
         rname = r.split(".")[0]
         cmd = 'trimmomatic PE -threads {thread} {for_fq} {rev_fq} {output}/{for_name}.p.fastq.gz unpaired/{for_name}.up.fastq.gz {output}/{rev_name}.p.fastq.gz unpaired/{rev_name}.up.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:{q} MINLEN:{l} AVGQUAL:{q} > trim.log'.format(
-            thread=t,
+            thread=threads,
             for_fq=f,
             for_name=fname,
             rev_fq=r,
             rev_name=rname,
-            l=l,
-            output=o,
-            q=q,
+            l=lgth,
+            output=output_dir,
+            q=qual,
         )
         print(cmd)
         os.system(cmd)
@@ -64,17 +64,24 @@ def run_trimmomatic(f_list, r_list, t, l, o, q):
 @click.option('-l', type=int, help="length-cutoff.")
 @click.option('-o', help="output dir.", default="paired")
 @click.option('-q', type=int, help="quality score.", default=25)
-def main(e, t, s, l, o, q):
-    p = o
+@click.option('-i', help="input dir.")
+def main(e, t, s, l, o, q, i):
+    input_dir = i
+    output_dir = o
+    exten = e
+    threads = t
+    lgth = l
+    qual = q
+    sample_type = s
     up = r'unpaired'
 
-    if not os.path.isdir(p):
-        os.makedirs(p)
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
 
     if not os.path.isdir(up):
         os.makedirs(up)
-    f_list, r_list = get_file_list(e, s)
-    run_trimmomatic(f_list, r_list, t, l, o, q)
+    f_list, r_list = get_file_list(input_dir, exten, sample_type)
+    run_trimmomatic(f_list, r_list, threads, lgth, output_dir, qual)
 
 
 if __name__ == '__main__':
