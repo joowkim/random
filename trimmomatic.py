@@ -22,7 +22,7 @@ def get_file_list(input_dir, exten, sample_type):
         quit()
 
     forward_list = sorted([i for i in glob.glob(os.path.join(input_dir, forward)) if os.path.isfile(i)])
-    reverse_list = sorted([i for i in glob.glob(os.path.join(input_dir, forward)) if os.path.isfile(i)])
+    reverse_list = sorted([i for i in glob.glob(os.path.join(input_dir, reverse)) if os.path.isfile(i)])
 
     if len(forward_list) != len(reverse_list):
         print("forward fq, reverse fq are different.")
