@@ -21,8 +21,8 @@ def get_file_list(input_dir, exten, sample_type):
         print(exten, " is either R1 or 1.")
         quit()
 
-    forward_list = sorted([os.path.join(input_dir, i) for i in glob.glob(forward)])
-    reverse_list = sorted([os.path.join(input_dir, i) for i in glob.glob(reverse)])
+    forward_list = sorted([i for i in glob.glob(os.path.join(input_dir, forward)) if os.path.isfile(i)])
+    reverse_list = sorted([i for i in glob.glob(os.path.join(input_dir, forward)) if os.path.isfile(i)])
 
     if len(forward_list) != len(reverse_list):
         print("forward fq, reverse fq are different.")
@@ -41,8 +41,8 @@ def get_file_list(input_dir, exten, sample_type):
 
 def run_trimmomatic(f_list, r_list, threads, lgth, output_dir, qual):
     for f, r in zip(f_list, r_list):
-        fname = f.split(".")[0]
-        rname = r.split(".")[0]
+        fname = os.path.basename(f).split(".")[0]
+        rname = os.path.basename(r).split(".")[0]
         cmd = 'trimmomatic PE -threads {thread} {for_fq} {rev_fq} {output}/{for_name}.p.fastq.gz unpaired/{for_name}.up.fastq.gz {output}/{rev_name}.p.fastq.gz unpaired/{rev_name}.up.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:{q} MINLEN:{l} AVGQUAL:{q} > trim.log'.format(
             thread=threads,
             for_fq=f,
