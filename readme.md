@@ -1,6 +1,7 @@
 # seq_tools
-## bioinformatics toy tools
-----------
+## bioinformatics toy tools  
+
+
 Requirement  
 ----------
   python 3.5(above)  
