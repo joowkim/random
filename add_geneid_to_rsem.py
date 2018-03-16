@@ -3,6 +3,16 @@ import os
 
 import click
 
+'''
+-How to make my one bed file from gencode gtf or ensembl gtf-
+-This code is from https://ycl6.gitbooks.io/-
+
+grep -P "\tgene\t" GTF | cut -f1,4,5,7,9 | \
+sed 's/[[:space:]]/\t/g' | sed 's/[;|"]//g' | \
+awk -F $'\t' 'BEGIN { OFS=FS } { print $1,$2-1,$3,$6,".",$4,$10,$12,$14 }' | \
+sort -k1,1 -k2,2n > my.own.genes.bed
+'''
+
 
 def parse_bed(bed):
     result = dict()
