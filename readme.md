@@ -1,6 +1,4 @@
-# seq_tools
-## bioinformatics toy tools  
-
+# bioinformatics toy tools  
 
 Requirement  
 ----------
