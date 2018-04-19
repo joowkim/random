@@ -42,7 +42,7 @@ def write_files(bed_dict, rsem_files):
                 final_line = line.split('\t')
                 effective_length = final_line[4]
 
-                if effective_length == "0":
+                if effective_length == "0.00":
                     effective_length = "1"
                     final_line[4] = effective_length
 
