@@ -40,11 +40,11 @@ def write_files(bed_dict, rsem_files):
             fout.write(first_line)
             for line in fin:
                 final_line = line.split('\t')
-                effective_length = final_line[4]
+                effective_length = final_line[3]
 
                 if effective_length == "0.00":
                     effective_length = "1"
-                    final_line[4] = effective_length
+                    final_line[3] = effective_length
 
                 ensembl_id = final_line[0]
                 ensembl_final = ensembl_id.split(".")[0]
