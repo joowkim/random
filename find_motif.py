@@ -6,3 +6,11 @@ def find_motif(source, substr):
         result.append(pos)
         pos += 1
     return result
+
+
+def find_motif_bad_way(strg, motif):
+    result = list()
+    for i in range(len(strg)):
+        if strg[i:len(motif) + i] == motif:
+            result.append(1)
+    print (sum(result))
