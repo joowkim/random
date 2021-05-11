@@ -1,7 +1,7 @@
 import argparse
 import logging
 
-from test_class import Test
+from test_class_for_logging import Test
 
 
 def main(backup_dir, source_dir, dest_dir, log):
