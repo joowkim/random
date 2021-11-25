@@ -1,7 +1,5 @@
 #PBS -l walltime=100:00:00
 #PBS -l mem=8gb
-#PBS -l nodes=node065
-#PBS -m ae
 #PBS -N down_sra
 #PBS -o logs/down_sra_workflow.o
 #PBS -e logs/down_sra_workflow.e
