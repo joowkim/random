@@ -25,7 +25,7 @@ logs_dir="logs/runs"
 snakemake \
 -p \
 --use-envmodules \
---jobs 50 \
+--jobs 20 \
 --cluster "qsub \
 -q bbc \
 -V \
