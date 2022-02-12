@@ -1,21 +1,23 @@
 ##reference https://stackoverflow.com/questions/44561183/multiple-inputs-and-outputs-in-a-single-rule-snakemake-file
 import os
 
-SRA_ID = dict()
+SRR_LIST = list()
 
-with open("all.sra.txt")as fin:
-    for line in fin:
-        #SRA_ID.append(line.strip())
-        SRA_ID[line.strip()] = line.strip()
+def srr_list():
+    srr_file = "SRR_Acc_List.txt"
+    assert os.path.isdir(srr_file), f"{srr_file} is not found!"
+    with open(srr_file)as fin:
+        for line in fin:
+            line = line.strip()
+            SRR_LIST.append(line)
 
-
-def chainfile2link(wildcards):
-    return SRA_ID[wildcards.sra_id]
+    return srr_file
 
 
 rule all:
     input:
-        expand("sra/{sra_id}_1.fastq.gz",sra_id=SRA_ID.keys())
+        expand("sra/{sra_id}_{read}.fastq.gz",sra_id=SRR_LIST, read=['1', '2'])
+
 
 rule down_sra:
     output:
@@ -23,12 +25,12 @@ rule down_sra:
     envmodules:
         "bbc/sratoolkit/sratoolkit-2.11.0",
     params:
-        link=chainfile2link
+        sra_id=srr_list
     threads: 4
     resources:
         nodes=1,
         mem_gb=8,
     shell:
         """
-        fastq-dump --split-3 --gzip {params.link}  --outdir "sra"
+        fasterq-dump {params} --split-3  --progress
         """
