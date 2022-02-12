@@ -1,0 +1,13 @@
+envmodules: # e.g. module load bbc/samtools/samtools-1.9
+    seqtk: bbc/seqtk/seqtk-1.3-r115-dirty
+    blast: bbc/blast+/blast+-2.10.0
+    perl: bbc/perl/perl-5.30.0
+    bioawk: bbc/bioawk/bioawk-git
+    R: bbc/R/R-3.6.0
+
+rawdata_dir: rawdata
+evalue: 0.000001
+blast_db : /secondary/projects/bbc/research/ncbi_blast+_db/nt/nt
+num_of_subsample: 50000
+perc_identity : 80
+qcov_hsp_perc : 80

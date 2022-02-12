@@ -1,0 +1,208 @@
+import glob
+
+configfile: "bin/config.yaml"
+
+
+def get_sample_names():
+    fq_dir = config["rawdata_dir"]
+    sample_list = glob.glob(f"{fq_dir}/*.fastq.gz")
+    samplename = [ i.replace(f"{fq_dir}/", "").replace(".fastq.gz", "") for i in sample_list]
+    return samplename
+
+
+def sample_names(): 
+    fq_dir = config["rawdata_dir"]
+    sample_list = glob.glob(f"{fq_dir}/*.fastq.gz")
+    samplename = [ i.replace(f"{fq_dir}/", "").replace("_demuxed_R1.fastq.gz", "").replace("_demuxed_R2.fastq.gz", "") for i in sample_list]
+    return samplename
+    
+
+rule all:
+    input:
+        #expand("fq2fa/{sample}.fa", sample = get_sample_names()),
+        #expand("blast_res/{sample}_fmt6.out", sample = get_sample_names()),
+        #expand("acc_id/{sample}.txt", sample = get_sample_names()),
+        #expand("uniq_acc_id/{sample}.txt", sample = get_sample_names()),
+        #expand("taxonomy_out/{sample}.species.out", sample = get_sample_names()),
+        #expand("taxonomy_out/{sample}.class.out", sample = get_sample_names()),
+        #expand("fa_length/{sample}.len.txt", sample = get_sample_names()),
+        expand("blast_parse_out/{sample}.out", sample = get_sample_names()),
+        #expand("bamfiles/{only_sample}.bam", only_sample = sample_names()),
+        #expand("samtools_stat/{only_sample}.txt", only_sample = sample_names()),
+
+
+rule subsample:
+    input:
+        "rawdata/{sample}.fastq.gz",
+    output:
+        "subsamples/{sample}.subsample.fq.gz",
+    threads: 4
+    params:
+        num_of_subsample = config["num_of_subsample"]
+    resources:
+        nodes = 1,
+        mem_gb = 4,
+    envmodules:
+        config["envmodules"]["seqtk"],
+    log:
+        stdout = "logs/subsample/{sample}.o",
+        stderr = "logs/subsample/{sample}.e",
+    shell:
+        """
+        seqtk sample -s 100 {input} {params.num_of_subsample} | gzip -c > {output}
+        """
+
+
+rule fq2fa:
+    input:
+        "subsamples/{sample}.subsample.fq.gz",
+    output:
+        "fq2fa/{sample}.fa",
+    threads: 4
+    resources:
+        nodes = 1,
+        mem_gb = 4,
+    envmodules:
+        config["envmodules"]["seqtk"],
+    log:
+        stdout = "logs/fq2fa/{sample}.o",
+        stderr = "logs/fq2fa/{sample}.e",
+    shell:
+        """
+        seqtk seq -a {input} > {output}
+        """
+
+
+rule run_blast:
+    input:
+        "fq2fa/{sample}.fa",
+    output:
+        "blast_res/{sample}_fmt6.out",
+    log:
+        stdout = "logs/run_blast/{sample}.o",
+        stderr = "logs/run_blast/{sample}.e",
+    params:
+        eval = config["evalue"],
+        db = config["blast_db"],
+        perc_identity = config["perc_identity"],
+        qcov_hsp_perc = config["qcov_hsp_perc"],
+    envmodules:
+        config["envmodules"]["blast"],
+    threads: 20
+    resources:
+        nodes = 1,
+        mem_gb = 100,
+    shell:
+        """
+        blastn -query {input} -out {output} -db {params.db} \
+        -evalue {params.eval}  \
+        -num_threads {threads} \
+        -perc_identity {params.perc_identity} \
+        -qcov_hsp_perc {params.qcov_hsp_perc} \
+        -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs qcov_hsp_perc qlen slen"
+        """
+
+
+rule parse_blast_output:
+    input:
+        "blast_res/{sample}_fmt6.out",
+    output:
+        "blast_parse_out/{sample}.out",
+    log:
+        stdout = "logs/parse_blast_output/{sample}.o",
+        stderr = "logs/parse_blast_output/{sample}.e",
+    threads: 4
+    resources:
+        mem_gb = 10,
+    envmodules:
+        config["envmodules"]["R"] ## R-3.6 has tidyverse library installed!
+    shell:
+        """
+        Rscript bin/parse_blast_output.R {input}  {output}
+        """ 
+
+
+#deprecated
+rule run_taxonomy_summary:
+    input:
+        "acc_id/{sample}.txt",
+    output:
+        species = "taxonomy_out/{sample}.species.out",
+        class_out = "taxonomy_out/{sample}.class.out",
+    log:
+        stdout = "logs/run_taxonomy_summary/{sample}.o",
+        stderr = "logs/run_taxonomy_summary/{sample}.e",
+    threads: 1
+    resources:
+        mem_gb = 4,
+    envmodules:
+        config["envmodules"]["perl"],
+    shell:
+        """
+        perl taxonomy_summary/bin/taxonomy_summary.pl --infile {input} --dna --taxmap --species > {output.species} ;
+
+        perl taxonomy_summary/bin/taxonomy_summary.pl --infile {input} --dna --taxmap --class > {output.class_out}
+        """
+
+
+#deprecated
+rule get_fa_length:
+    input:
+        "fq2fa/{sample}.fa",
+    output:
+        "fa_length/{sample}.len.txt",
+    log:
+        stdout = "logs/get_fa_length/{sample}.o",
+        stderr = "logs/get_fa_length/{sample}.e",
+    threads: 1
+    resources:
+        mem_gb = 4,
+    envmodules:
+        config['envmodules']['bioawk'],
+    shell:
+        """
+        cat {input} | bioawk -c fastx "{{print length(\\$seq)}}"  > {output}       
+        """
+
+
+rule bowtie2:
+    input:
+        fq1 = "subsamples/{only_sample}_demuxed_R1.subsample.fq",
+        fq2 = "subsamples/{only_sample}_demuxed_R2.subsample.fq",
+    output:
+        bam = "bamfiles/{only_sample}.bam",
+        bowtie2_out = "bowtie2_out/{only_sample}.txt"
+    log:
+        stdout = "logs/{only_sample}.o",
+        stderr = "logs/{only_sample}.e",
+    params:
+        "bowtie2_index/silva_16s-id90_23s-id98_rfam-5s_rfam-5.8s",
+    threads: 4
+    resources:
+        mem_gb = 10,
+    envmodules:
+        'bbc/bowtie2/bowtie2-2.3.5.1',
+        'bbc/samtools/samtools-1.14',
+    shell:
+        """
+        (bowtie2 -p {threads} -x {params} -1 {input.fq1} -2 {input.fq2} )  2>{output.bowtie2_out}  | samtools view -@ 4 -bS - > {output.bam}
+        """
+
+
+rule samtools_stat:
+    input:
+        "bamfiles/{only_sample}.bam",
+    output:
+        "samtools_stat/{only_sample}.txt",
+    log:
+        stdout = "logs/{only_sample}.o",
+        stderr = "logs/{only_sample}.e",
+    threads: 4
+    resources:
+        mem_gb = 10,
+    envmodules:
+        'bbc/samtools/samtools-1.14',
+    shell:
+        """
+        samtools stat -@ {threads} {input} > {output}
+        """
