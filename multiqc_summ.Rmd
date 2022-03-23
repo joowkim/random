@@ -1,0 +1,205 @@
+---
+title: "Multiqc Report"
+author: "Jay Kim"
+# date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    code_folding: hide
+    self_contained: yes
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+pacman::p_load("tidyverse", "plotly", 'ggpubr', 'RColorBrewer', 'jsonlite')
+multiqc_dir <- 'multiqc_dir'
+```
+
+### Multiqc report Summary
+Summary of STAR alignment, fastqc-screen and fastqc statistic provided. The average read length after trimming is 99~100bp in all samples. 
+
+### STAR alignment rate  
+```{r STAR Alignment Rate, message=FALSE, fig.height= 7, fig.width=10}
+# multiqc_dir <- "multiqc_report_data/"
+star_df_raw <- read_tsv(paste0(multiqc_dir, "/","multiqc_star.txt"))
+# DT::datatable(star_df_raw)# 
+star_df_percnt <- star_df_raw %>% dplyr::select(Sample, 
+                                         avg_input_read_length, 
+                                         total_reads,
+                                         # uniquely_mapped, 
+                                         uniquely_mapped_percent,
+                                         # multimapped, 
+                                         multimapped_percent,
+                                         # multimapped_toomany,
+                                         multimapped_toomany_percent,
+                                         # unmapped_tooshort,
+                                         unmapped_tooshort_percent,
+                                         # unmapped_other,
+                                         unmapped_other_percent
+                                         )
+
+star_df_percnt_long <- pivot_longer(star_df_percnt, cols = 4:ncol(star_df_percnt), names_to = "Alignment", values_to = "Percentage")
+
+star_df_percnt_long_final <- star_df_percnt_long %>% group_by(Sample) %>% 
+                      mutate(AlignmentRate = Percentage) %>%
+                      arrange(Sample)
+
+pl <- ggplot(star_df_percnt_long_final, aes(x=Sample, y=AlignmentRate, fill=Alignment)) + 
+  geom_bar(stat='identity') +
+  # geom_bar(position='fill', stat='identity') + 
+  theme_bw() + 
+  coord_flip() + 
+  xlab("Sample") +
+  ylab("AlignmentRate(%)") +
+  scale_fill_brewer(palette = "Set3")
+  # labs(colour="Alignemt") 
+  # scale_y_continuous(labels = scales::percent_format()) 
+
+fig <- ggplotly(pl)
+fig
+
+DT::datatable(star_df_percnt %>% dplyr::select(Sample, total_reads, uniquely_mapped_percent, multimapped_percent, multimapped_toomany_percent, unmapped_tooshort_percent, unmapped_other_percent, avg_input_read_length))
+```
+
+### STAR alignment # of reads
+
+```{r FSTAR alignment # of reads, message=FALSE, warning=TRUE, fig.height= 7, fig.width=10}
+star_df_num <- star_df_raw %>% dplyr::select(Sample, 
+                                         avg_input_read_length, 
+                                         total_reads,
+                                         uniquely_mapped,
+                                         # uniquely_mapped_percent,
+                                         multimapped,
+                                         # multimapped_percent,
+                                         multimapped_toomany,
+                                         # multimapped_toomany_percent,
+                                         unmapped_tooshort,
+                                         # unmapped_tooshort_percent,
+                                         unmapped_other,
+                                         # unmapped_other_percent
+                                         )
+
+star_df_num_long <- pivot_longer(star_df_num, cols = 4:ncol(star_df_percnt), names_to = "Alignment", values_to = "num_of_reads")
+
+pl_num <- ggplot(star_df_num_long, aes(x=Sample, y=num_of_reads, fill=Alignment)) + 
+  geom_bar(stat='identity') +
+  # geom_bar(position='fill', stat='identity') + 
+  theme_bw() + 
+  coord_flip() + 
+  xlab("Sample") +
+  ylab("# of reads") +
+  scale_fill_brewer(palette = "Set3")
+  # labs(colour="Alignemt") 
+  # scale_y_continuous(labels = scales::percent_format()) 
+
+fig_num <- ggplotly(pl_num)
+fig_num
+DT::datatable(star_df_num %>% dplyr::select(Sample, total_reads, uniquely_mapped, multimapped, multimapped_toomany, unmapped_tooshort, unmapped_other, avg_input_read_length))
+
+```
+
+
+### Fastq screen
+```{r Faastq screen, message=FALSE, warning=TRUE, fig.height= 7, fig.width=10}
+multiqc_json <- fromJSON(paste0(multiqc_dir, "/", "multiqc_data.json"))
+fqscreen_raw <- multiqc_json$report_plot_data$`fastq_screen-1`$datasets %>% as.data.frame()
+fqscreen_sample_name <- multiqc_json$report_plot_data$`fastq_screen-1`$samples %>% as.vector()
+names(fqscreen_raw$data) <- fqscreen_raw$name
+fqscreen_df <- fqscreen_raw$data %>% as.data.frame()
+fqscreen_df$Sample <- fqscreen_sample_name
+# fqscreen_df_raw <- read_tsv(paste0(multiqc_dir, "/","multiqc_fastq_screen.txt")) 
+
+fqscreen_df_long <- pivot_longer(fqscreen_df, !Sample, names_to = 'Species', values_to = "ReadCount") %>%
+                        # filter(grepl("_R1", Sample)) %>%
+                        mutate(Sample=str_replace_all(Sample, "_screen", ""))
+
+fqscreen_df_long_final <- fqscreen_df_long %>% group_by(Sample) %>% 
+                          mutate(Percentages = round(ReadCount/sum(ReadCount), 3) * 100) %>%
+                          arrange((Sample))
+
+pl_2 <- ggplot(fqscreen_df_long_final, aes(x=Sample, y=Percentages, fill=Species)) + 
+  geom_bar(stat='identity') +
+  # geom_bar(position='fill', stat='identity') + 
+  theme_bw() + 
+  coord_flip() + 
+  xlab("Sample") +
+  ylab("Percentages(%) from subsamples (100000)") + 
+  scale_fill_brewer(palette = "Set3")
+  labs(colour="Species")
+  
+fig_2 <- ggplotly(pl_2)
+fig_2
+
+DT::datatable(fqscreen_df %>% dplyr::select(Sample, Human, Mouse, Rat, Drosophila, Worm, Yeast, Ecoli, PhiX, Vectors, SILVA_rRNA, ERCC, `Multiple.Genomes`, `No.hits`))
+```
+
+### Fastqc duplication level  
+```{r Fastqc duplication level, message=FALSE, warning=TRUE, fig.height= 7, fig.width=10}
+multiqc_json <- fromJSON(paste0(multiqc_dir, "/", "multiqc_data.json"))
+fastqc_dup_raw <- multiqc_json$report_plot_data$fastqc_sequence_duplication_levels_plot$datasets[[1]]$data #%>% dplyr::select(-color)
+fastqc_dup_sample_name <- multiqc_json$report_plot_data$fastqc_sequence_duplication_levels_plot$datasets[[1]]$name
+names(fastqc_dup_raw) <- fastqc_dup_sample_name
+seq_dup_level <- multiqc_json$report_plot_data$fastqc_sequence_duplication_levels_plot$config$categories
+seq_dup_level_int <- 1:16
+fastqc_dup_df <- fastqc_dup_raw %>% as.data.frame()
+
+fastqc_dup_df <- cbind(seq_dup_level_int, fastqc_dup_df) %>% as.data.frame()
+
+fq_dup_df_long <- pivot_longer(data = fastqc_dup_df, cols = !seq_dup_level_int, names_to = "Sample", values_to = "percentage_of_lib")
+
+pl_4 <- ggplot(fq_dup_df_long, aes(x=seq_dup_level_int, y=percentage_of_lib, color=Sample)) +
+  geom_line() +
+  # geom_bar(position='fill', stat='identity') + 
+  theme_bw() + 
+  # coord_flip() + 
+  xlab("Seq_duplication_level") +
+  ylab("% of Library") +
+  scale_fill_brewer(palette = "Set3") +
+  scale_x_continuous(breaks = seq(1, 16, by = 1), labels = seq_dup_level) + 
+  ylim(0, 100)
+
+fig_4 <- ggplotly(pl_4)
+fig_4
+```
+
+### Fastqc sequence counts  
+```{r Fastqc sequence counts, message=FALSE, warning=TRUE, fig.height= 7, fig.width=10}
+multiqc_json <- fromJSON(paste0(multiqc_dir, "/", "multiqc_data.json"))
+fastqc_sequence_raw <- multiqc_json$report_plot_data$fastqc_sequence_counts_plot$datasets %>% as.data.frame()
+fastqc_sequence_sample_name <- multiqc_json$report_plot_data$fastqc_sequence_counts_plot$samples %>% as.vector()
+names(fastqc_sequence_raw$data) <- fastqc_sequence_raw$name
+fastqc_sequence_df <- fastqc_sequence_raw$data %>% as.data.frame()
+fastqc_sequence_df$Sample <-fastqc_sequence_sample_name
+
+
+fastqc_df_long <- pivot_longer(fastqc_sequence_df, !Sample, names_to = "Reads", values_to = "ReadCount") # %>%
+                   # filter(grepl("_R1", Sample)) %>%
+                   # mutate(Sample=str_replace_all(Category, "_val_[12]", ""))
+
+fastqc_df_long_final <- fastqc_df_long %>% group_by(Sample) %>% 
+                      mutate(Percentages = round(ReadCount/sum(ReadCount), 3) * 100) %>%
+                      # filter(grepl("_R1", Sample)) %>%
+                      # mutate(Sample=str_replace_all(Sample, "_R1", "")) %>%
+                      arrange((Sample))
+
+pl_3 <- ggplot(fastqc_df_long_final, aes(x=Sample, y=Percentages, fill=Reads)) + 
+  geom_bar(stat='identity') +
+  # geom_bar(position='fill', stat='identity') + 
+  theme_bw() + 
+  coord_flip() + 
+  xlab("Sample") +
+  ylab("Percentages(%)") +
+  scale_fill_brewer(palette = "Set3")
+  # labs(colour="Alignemt") 
+  # scale_y_continuous(labels = scales::percent_format()) 
+
+fig_3 <- ggplotly(pl_3)
+fig_3
+
+DT::datatable(fastqc_sequence_df %>% dplyr::select(Sample, `Unique.Reads`, `Duplicate.Reads`))
+```
