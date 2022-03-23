@@ -1,0 +1,163 @@
+---
+title: "Blast Result for cogent demux"
+date: "`r Sys.Date()`"
+author: Jay Kim
+output:
+  # rmdformats::readthedown:
+  html_document:
+    code_folding: hide
+    self_contained: yes
+    toc: true
+    toc_depth: 5
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(kableExtra.html.bsTable = T)
+```
+
+# Load lib
+
+```{r load lib}
+pacman::p_load("tidyverse", "ggpubr", "taxonomizr", "kableExtra", "DT")
+accession_sql <- "../taxonomizr/accessionTaxa.sql"
+
+blast_parse_out_list <- file.path("blast_parse_out", list.files("blast_parse_out"))
+
+blast_colname <- c("query_id", "sub_acc", "percnt_iden", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "qcovs", "qlen", "slen")
+```
+
+
+# Define function
+
+```{r def_func}
+display_output <- function(parse_output) {
+  
+  stopifnot(file.exists(parse_output))
+  dat_df <- read_tsv(parse_output)
+  dat_filt_df <- dat_df %>% mutate(acc_id = str_split(sub_acc, "\\|") %>% map_chr(., 4))
+  dat_filt_df$taxaId <- accessionToTaxa(dat_filt_df$acc_id, accession_sql) %>% as.character()
+  
+  taxa_df <- getTaxonomy(dat_filt_df$taxaId, accession_sql) 
+  
+  ## to remove rownames which is taxa id, 75535, 6546
+  join_df <- cbind(dat_filt_df, taxa_df) %>% as_tibble()
+  join_df <- join_df %>% drop_na()
+  # print(join_df %>% dplyr::select(-query_id) %>% DT::datatable(filter = 'top'))
+  # print(join_df %>% group_by(species) %>% summarise(count = n()) %>% arrange(desc(count)) %>% DT::datatable())
+  return(join_df)
+
+}
+
+```
+
+# Summary
+We subsampled 50,000 reads from each fastq file (36 fastq files in total) and identified them using BLAST. 1,392,481 reads after filtering out BLAST outputs. 
+About 56% of the filtered reads are identified as four bacterial families - Pseudomonadaceae, Sphingomonadaceae, Alcaligenaceae and Burkholderiaceae. Only about 6% of the reads are identified as Mus musculus.
+
+```{r, results='asis', warning=FALSE, message=FALSE, echo=FALSE}
+
+result_list <- list()
+for (i in blast_parse_out_list) {
+
+  tmp <- display_output(i)
+   
+  tmp_list <- list(tmp)
+  result_list <- append(result_list, tmp_list)
+  
+} ## end for iteration
+
+merged_df <- result_list %>% reduce(bind_rows)
+
+merged_df %>% group_by(family) %>% summarise(num_of_count = n()) %>% arrange(desc(num_of_count)) %>% mutate(percent = (num_of_count / sum(num_of_count) * 100) %>% round(2) , total_reads = sum(num_of_count)) %>%
+  datatable(filter = "top")
+
+
+```
+
+# Phylum and species level info
+
+
+```{r}
+## show taxonomy info
+merged_df %>% group_by(phylum) %>% summarise(num_of_count = n()) %>% arrange(desc(num_of_count)) %>% mutate(percent = (num_of_count / sum(num_of_count) * 100) %>% round(2) , total_reads = sum(num_of_count)) %>%
+  datatable(filter = "top")
+
+
+## show taxonomy info
+merged_df %>% group_by(species) %>% summarise(num_of_count = n()) %>% arrange(desc(num_of_count)) %>% mutate(percent = (num_of_count / sum(num_of_count) * 100) %>% round(2) , total_reads = sum(num_of_count)) %>%
+  datatable(filter = "top")
+```
+
+
+# How we obtained BLAST best hits 
+
+1. Subsample 50,0000 reads from each fastq file.  
+2. Run BLAST against nt database with these options - evalue <= 0.000001, query coverage per subject >= 80% and percent identity >= 80%.  
+3. Obtain the best hit for each read by selecting the lowest evalue and highest query coverage, percent identity, and bitscore.  
+4. Obtain taxonomy information for the best hits by [taxonomizr](https://cran.r-project.org/web/packages/taxonomizr/vignettes/usage.html).   
+5. Sum up the results from taxonmizr outputs.  
+
+
+
+# Session info
+```{r}
+sessionInfo()
+```
+
+<!-- # display each blast output -->
+<!-- The number of sumsample : 50000   -->
+<!-- blast cmd : blastn -evalue 0.001   -->
+
+<!-- ```{r display each output, results='asis', warning=FALSE, message=FALSE} -->
+<!-- # myf <- lapply(blast_parse_out_list[1:3], read_tsv) -->
+<!-- # names(myf) <- blast_parse_out_list[1:3] %>% basename() -->
+<!-- # lapply(blast_parse_out_list[1:3], display_output) -->
+<!-- print("how to choose the best hit for each query.") -->
+<!-- print("blast_filt_df <- blast_df %>% filter(qcov_hps_perec >= 80 & perc_identity >= 80 & evalue <= 0.000001) %>%   -->
+<!--                         group_by(query_id) %>%   -->
+<!--                         arrange(evalue, desc(qcovs), desc(bitscore), desc(perc_identity)) %>%   -->
+<!--                         filter(row_number() ==1 )  ") -->
+
+
+<!-- # result_list <- list() -->
+<!-- for (i in blast_parse_out_list) { -->
+
+<!--   cat("\n\n") -->
+<!--   cat("Sample Name : ") -->
+
+<!--   cat(basename(i)) -->
+<!--   tmp <- display_output(i) -->
+
+<!--   # tmp %>% dplyr::select(-query_id) %>% head(5)  %>% kbl() %>% kable_styling() %>% print() -->
+<!--   tmp %>% group_by(phylum) %>% summarise(num_of_count = n()) %>% arrange(desc(num_of_count)) %>%  -->
+<!--           mutate(percent = (num_of_count / sum(num_of_count) * 100) %>% round(2), total_reads = sum(num_of_count)) %>% -->
+<!--           head(5) %>% kbl() %>% kable_styling() %>% print() -->
+
+<!--   tmp %>% group_by(family) %>% summarise(num_of_count = n()) %>% arrange(desc(num_of_count)) %>%  -->
+<!--           mutate(percent = (num_of_count / sum(num_of_count) * 100) %>% round(2), total_reads = sum(num_of_count)) %>% -->
+<!--           head(5) %>% kbl() %>% kable_styling() %>% print() -->
+
+<!--   tmp %>% group_by(species) %>% summarise(num_of_count = n()) %>% arrange(desc(num_of_count)) %>%  -->
+<!--           mutate(percent = (num_of_count / sum(num_of_count) * 100) %>% round(2), total_reads = sum(num_of_count)) %>% -->
+<!--           head(5) %>% kbl() %>% kable_styling() %>% print() -->
+<!--   cat("\n\n") -->
+<!--   # tmp %>% group_by(species) %>% summarise(count = n()) %>% arrange(desc(count)) %>% DT::datatable(filter = 'top') -->
+<!--   # print(tmp %>% group_by(species) %>%  -->
+<!--   #         summarise(num_of_count = n()) %>%  -->
+<!--   #         arrange(desc(num_of_count)) %>%  -->
+<!--   #         mutate(percent = num_of_count / sum(num_of_count) * 100, total_reads = sum(num_of_count)) -->
+<!--   #       ) -->
+<!--   # tmp_list <- list(tmp_df) -->
+<!--   # tmp_list <- list(tmp) -->
+<!--   # result_list <- append(result_list, tmp_list) -->
+
+<!--   cat("\n\n") -->
+
+<!-- } -->
+
+<!-- ``` -->
