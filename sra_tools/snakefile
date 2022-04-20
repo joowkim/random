@@ -1,8 +1,8 @@
 import pandas as pd
 
-meta_file = "meta.txt"
-units = pd.read_table(meta_file).drop_duplicates(subset=["Accession"])
-SRAFILES = list(units["Accession"])
+meta_file="meta.txt"
+units=pd.read_table(meta_file).drop_duplicates(subset=["Accession"])
+SRAFILES=list(units["Accession"])
 
 
 rule all:
@@ -18,12 +18,13 @@ rule down_sra:
     envmodules:
         "bbc/sratoolkit/sratoolkit-2.11.0",
     params:
-        threads = 5,
+        threads=5,
     resources:
+        nodes=1,
         mem_gb=8,
     shell:
         """
-        fasterq-dump {wildcards.srr} --outdir raw_data --threads {params.threads}
+                fasterq-dump {wildcards.srr} --outdir raw_data --threads {params.threads}
         """
 
 
@@ -37,6 +38,7 @@ rule pigz:
     resources:
         mem_gb=8,
     params:
+        nodes=1,
         threads=4
     shell:
         """
