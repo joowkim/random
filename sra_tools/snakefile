@@ -38,9 +38,10 @@ rule pigz:
     envmodules:
         "bbc/pigz/pigz-2.4",
     resources:
+        nodes=1,
         mem_gb=8,
     params:
-        nodes=1,
+
         threads=4
     shell:
         """
