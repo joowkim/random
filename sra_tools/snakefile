@@ -2,7 +2,7 @@ import pandas as pd
 
 meta_file="meta.txt"
 units=pd.read_table(meta_file).drop_duplicates(subset=["Accession"])
-SRAFILES=list(units["Accession"])
+SRAFILES=list(set(units["Accession"]))
 
 
 rule all:
@@ -14,17 +14,19 @@ rule down_sra:
     input:
         meta_file,
     output:
-        "raw_data/{srr}_{reads}.fastq"
+        "raw_data/{srr}_1.fastq",
+        "raw_data/{srr}_2.fastq",
     envmodules:
         "bbc/sratoolkit/sratoolkit-2.11.0",
     params:
+        #srr_ids=SRAFILES,
         threads=5,
     resources:
         nodes=1,
         mem_gb=8,
     shell:
         """
-                fasterq-dump {wildcards.srr} --outdir raw_data --threads {params.threads}
+    	fasterq-dump {wildcards.srr} --outdir raw_data --threads {params.threads}
         """
 
 
