@@ -41,7 +41,6 @@ rule pigz:
         nodes=1,
         mem_gb=8,
     params:
-
         threads=4
     shell:
         """
