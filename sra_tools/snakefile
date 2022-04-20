@@ -46,3 +46,7 @@ rule pigz:
         """
         pigz {input} -p {params.threads}
         """
+
+# cmd
+# cut -f 11,12 meta.txt > sample_name_changed.txt
+# tail -n +2 sample_name_changed.txt | sed 's/SRR[[:alnum:]]*_GSM[[:alnum:]]*_//' | sed 's/_Homo_sapiens_RNA-Seq//' | awk '{print "mv" "\t" $1 "\t" $2}'
