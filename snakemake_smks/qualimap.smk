@@ -40,4 +40,5 @@ rule qualimap:
         -gtf {params.gtf} --paired \
         --sequencing-protocol strand-specific-reverse \
         -outdir analysis/qualimap/{wildcards.sample} \
+        --java-mem-size={resources.mem_gb}G
         """
