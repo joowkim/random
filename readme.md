@@ -18,3 +18,8 @@ A supplementary alignment (also known as a chimeric alignment) is an align-ment 
 docker run -v ${PWD}:/docker/ quay.io/biocontainers/fastqc:0.11.9--0 fastqc /docker/data/ggal/gut-1.fq -o /docker/fastqc-out
 -v ${PWD} host machine current dir
 :/docker/ docker container
+
+# Git
+git remote add origin https://github.com/<your-github-username>/your-project.git
+
+git push -u origin main
