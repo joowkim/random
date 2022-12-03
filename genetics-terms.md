@@ -22,3 +22,10 @@ Which definition is implied is largely based on the context of the conversation:
 Haplotype:
 
 Recall that each human genome is composed of pairs of chromosomes, one inherited from each parent. That means, with a few exceptions, nearly every gene has two copies. Often the two DNA sequences of that encoded gene differ. Each distinct copy is a haplotype for that gene. Together the two haplotypes make up the genotype, and the proteins they produce determines the phenotype. A variant is often detected on only one copy of the gene. If the variant causes a loss of function in an important gene, that one mutation may be insufficient to cause cancer but may create a predisposition to cancer later in life.
+
+
+Homology: Similarity due to shared ancestry.
+ - Possible causes of similairy
+  - Change
+  - Independent selection for the same function (convergent evolution)
+  - Common ancetry (homology)
