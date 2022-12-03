@@ -1,8 +1,12 @@
 Locus (pl. loci):  A fixed position on a chromosome that may be occupied by one or more genes. 
 
+Locus: the location of a gene or other DNA sequence on a chromosome - refers to any/all alleles of that gene.
+
 Allele: One of a number of alternative forms of the same gene occupying a given locus on a chromosome.
 
 Allele: a basic unit to describe a variant form of a given gene
+
+Allele: a non-identical version of a gene or, more generally, of a DNA sequence. One of the versions of a gene or a version of a DNA sequence, even if it's not a gene.
 
 Genotype: The DNA sequence  of the genetic makeup of an organism which determines a specific phenotype of that organism
 
