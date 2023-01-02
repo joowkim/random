@@ -29,3 +29,7 @@ Homology: Similarity due to shared ancestry.
   - Change
   - Independent selection for the same function (convergent evolution)
   - Common ancetry (homology)
+
+
+Dominance 
+Consider two alleles that give different phenotypes when homozygous. If a heterozygours individual has the same phenotype as one of the homozygotes, geneticists say that allele is 'dominant' to the other. Dominance describes a *relationship* beteen two alleles. not a property of a single allele.
