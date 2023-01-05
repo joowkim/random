@@ -28,3 +28,11 @@ docker run -v ${PWD}:/docker/ quay.io/biocontainers/fastqc:0.11.9--0 fastqc /doc
 git remote add origin https://github.com/<your-github-username>/your-project.git
 
 git push -u origin main
+
+# fastqc
+
+well explained
+
+https://rtsf.natsci.msu.edu/sites/_rtsf/assets/File/FastQC_TutorialAndFAQ_080717.pdf
+
+https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/lessons/qc_fastqc_assessment.html
