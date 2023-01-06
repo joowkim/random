@@ -36,3 +36,8 @@ well explained
 https://rtsf.natsci.msu.edu/sites/_rtsf/assets/File/FastQC_TutorialAndFAQ_080717.pdf
 
 https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/lessons/qc_fastqc_assessment.html
+
+
+# nextflow
+
+https://carpentries-incubator.github.io/workflows-nextflow/01-getting-started-with-nextflow/index.html
