@@ -32,4 +32,9 @@ Homology: Similarity due to shared ancestry.
 
 
 Dominance 
-Consider two alleles that give different phenotypes when homozygous. If a heterozygours individual has the same phenotype as one of the homozygotes, geneticists say that allele is 'dominant' to the other. Dominance describes a *relationship* beteen two alleles. not a property of a single allele.
+
+Consider two alleles that give different phenotypes when homozygous. If a heterozygours individual has the same phenotype as one of the homozygotes, geneticists say that allele is 'dominant' to the other. Dominance describes a *relationship* beteen two alleles. not a property of a single allele. 
+
+If the heterozygote has an in-­‐between phenotype, We say the allele's effects are **blended** or **addtive** in the heterozygote phenotype (avoid 'semi‐dominance' or 'incomplete dominance')
+
+If the heterozygote has both phenotypes, We say that both allele's phenotypes are seen in the heterozygote (avoid 'co-dominance')
