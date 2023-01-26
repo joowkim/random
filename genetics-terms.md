@@ -38,3 +38,7 @@ Consider two alleles that give different phenotypes when homozygous. If a hetero
 If the heterozygote has an in-­‐between phenotype, We say the allele's effects are **blended** or **addtive** in the heterozygote phenotype (avoid 'semi‐dominance' or 'incomplete dominance')
 
 If the heterozygote has both phenotypes, We say that both allele's phenotypes are seen in the heterozygote (avoid 'co-dominance')
+
+Heritability
+
+The degree to which differences in phenotype are due to differences in genotype
