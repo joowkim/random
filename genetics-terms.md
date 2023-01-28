@@ -39,6 +39,8 @@ If the heterozygote has an in-­‐between phenotype, We say the allele's effect
 
 If the heterozygote has both phenotypes, We say that both allele's phenotypes are seen in the heterozygote (avoid 'co-dominance')
 
+BRCA1 +/-: one functional allele/one defective allele.
+
 Heritability
 
 The degree to which differences in phenotype are due to differences in genotype
