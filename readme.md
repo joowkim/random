@@ -41,3 +41,8 @@ https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/lessons/qc_fastqc_asses
 # nextflow
 
 https://carpentries-incubator.github.io/workflows-nextflow/01-getting-started-with-nextflow/index.html
+
+# singularity
+```
+singularity exec --cleanenv -H $PWD  --bind $PWD:/$PWD /mnt/beegfs/kimj32/singularity/tidyverse_1.0.0.sif Rscript $PWD/star_to_mat.R $PWD/analysis/star/
+```
