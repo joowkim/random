@@ -46,3 +46,7 @@ https://carpentries-incubator.github.io/workflows-nextflow/01-getting-started-wi
 ```
 singularity exec --cleanenv -H $PWD  --bind $PWD:/$PWD /mnt/beegfs/kimj32/singularity/tidyverse_1.0.0.sif Rscript $PWD/star_to_mat.R $PWD/analysis/star/
 ```
+
+# housekeeping gene list
+housekeepers.txt: list of 98 housekeeping genes compiled in Tirosh et al., 2016, to be used in data preprocessing, to remove sources of unwanted variation
+See https://github.com/Michorlab/tnbc_scrnaseq
