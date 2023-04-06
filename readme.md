@@ -50,3 +50,11 @@ singularity exec --cleanenv -H $PWD  --bind $PWD:/$PWD /mnt/beegfs/kimj32/singul
 # housekeeping gene list
 housekeepers.txt: list of 98 housekeeping genes compiled in Tirosh et al., 2016, to be used in data preprocessing, to remove sources of unwanted variation
 See https://github.com/Michorlab/tnbc_scrnaseq
+
+# Google tricks
+- Add [r] to search R programming related pages. i.e. "rotate x axis label [python]
+- Use quotations `" "` to searech for the exact phrase.
+- Add a tilde `~` in front of a word to find synonyms.
+- Exclude terms with a minux `-` symbol.
+- Search specific sites with `site:` e.g. "heatmap site:https://support.binconductor.org"
+- Define a filetype by : `heatmap filetype:pdf`. It will only give you PDF files in the results. -from Dr. Ming Tang (https://www.youtube.com/watch?v=qg3FP2CCeRw)
