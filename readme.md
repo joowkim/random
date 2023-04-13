@@ -47,6 +47,12 @@ https://carpentries-incubator.github.io/workflows-nextflow/01-getting-started-wi
 singularity exec --cleanenv -H $PWD  --bind $PWD:/$PWD /mnt/beegfs/kimj32/singularity/tidyverse_1.0.0.sif Rscript $PWD/star_to_mat.R $PWD/analysis/star/
 ```
 
+Be aware that singularity can't follow symlinks.
+
+`singularity run --bind analysis/sing:/data/ ~/beegfs/singularity/multiqc.sif multiqc /data/`
+
+
+
 # housekeeping gene list
 housekeepers.txt: list of 98 housekeeping genes compiled in Tirosh et al., 2016, to be used in data preprocessing, to remove sources of unwanted variation
 See https://github.com/Michorlab/tnbc_scrnaseq
@@ -58,8 +64,3 @@ See https://github.com/Michorlab/tnbc_scrnaseq
 - Exclude terms with a minux `-` symbol.
 - Search specific sites with `site:` e.g. "heatmap site:https://support.binconductor.org"
 - Define a filetype by : `heatmap filetype:pdf`. It will only give you PDF files in the results. -from Dr. Ming Tang (https://www.youtube.com/watch?v=qg3FP2CCeRw)
-
-# Singularity
-Be aware that singularity can't follow symlinks.
-
-`singularity run --bind analysis/sing:/data/ ~/beegfs/singularity/multiqc.sif multiqc /data/`
