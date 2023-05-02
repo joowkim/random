@@ -64,3 +64,7 @@ See https://github.com/Michorlab/tnbc_scrnaseq
 - Exclude terms with a minux `-` symbol.
 - Search specific sites with `site:` e.g. "heatmap site:https://support.binconductor.org"
 - Define a filetype by : `heatmap filetype:pdf`. It will only give you PDF files in the results. -from Dr. Ming Tang (https://www.youtube.com/watch?v=qg3FP2CCeRw)
+
+# List of illumina adapter sequences
+
+See https://knowledge.illumina.com/library-preparation/general-library-preparation/library-preparation-general-reference_material-list/000001314
