@@ -68,3 +68,7 @@ See https://github.com/Michorlab/tnbc_scrnaseq
 # List of illumina adapter sequences
 
 See https://knowledge.illumina.com/library-preparation/general-library-preparation/library-preparation-general-reference_material-list/000001314
+
+# Specific problems for illumina libraries
+
+https://training.galaxyproject.org/training-material/topics/sequence-analysis/tutorials/quality-control/tutorial.html
