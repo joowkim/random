@@ -37,6 +37,7 @@ https://rtsf.natsci.msu.edu/sites/_rtsf/assets/File/FastQC_TutorialAndFAQ_080717
 
 https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon/lessons/qc_fastqc_assessment.html
 
+https://www.sc-best-practices.org/introduction/raw_data_processing.html
 
 # nextflow
 
