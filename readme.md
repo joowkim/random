@@ -73,3 +73,7 @@ See https://knowledge.illumina.com/library-preparation/general-library-preparati
 # Specific problems for illumina libraries
 
 https://training.galaxyproject.org/training-material/topics/sequence-analysis/tutorials/quality-control/tutorial.html
+
+# illumina index sequence
+
+https://github.com/faircloth-lab/illumiprocessor/blob/main/docs/usage.rst
