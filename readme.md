@@ -77,3 +77,6 @@ https://training.galaxyproject.org/training-material/topics/sequence-analysis/tu
 # illumina index sequence
 
 https://github.com/faircloth-lab/illumiprocessor/blob/main/docs/usage.rst
+  
+# font
+https://www.koddi.or.kr/ud/sub1_2
