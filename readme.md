@@ -52,7 +52,9 @@ Be aware that singularity can't follow symlinks.
 
 `singularity run --bind analysis/sing:/data/ ~/beegfs/singularity/multiqc.sif multiqc /data/`
 
+Your home directory (or current directory, on older versions) on the host machine is mounted in and used as the working directory inside the container. You can use the --pwd flag to override this.
 
+See https://stackoverflow.com/questions/65642199/difference-between-working-directory-of-docker-and-singularity
 
 # housekeeping gene list
 housekeepers.txt: list of 98 housekeeping genes compiled in Tirosh et al., 2016, to be used in data preprocessing, to remove sources of unwanted variation
