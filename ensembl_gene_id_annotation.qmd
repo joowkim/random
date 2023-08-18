@@ -1,0 +1,108 @@
+---
+title: "Gene ID annotation"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+editor: visual
+date: today
+author: "Joowook Kim"
+
+execute:
+  warning: false
+---
+
+# Load lib
+
+```{r}
+library(tidyverse)
+library(airway)
+```
+
+# Prepare read count matrix
+
+```{r}
+data('airway')
+se <- airway
+
+read_cnt_df <- assay(se, 'counts') |> 
+  data.frame() #|>
+  # rownames_to_column(var = "gene_id") |>
+  # as_tibble()
+```
+
+# Use biomart
+
+if you want to see a list of attributes of dbs. `listAttributes(ensembl)`
+
+```{r}
+library(biomaRt)
+ensembl <- useEnsembl(biomart = "ensembl",
+                      dataset = "hsapiens_gene_ensembl")
+
+meta_genes <- getBM(attributes = c("ensembl_gene_id",
+                                   "ensembl_gene_id_version",
+                                   "hgnc_symbol",
+                                   "description",
+                                   "chromosome_name",
+                                   "start_position",
+                                   "end_position",
+                                   "strand",
+                                   "entrezgene_id"
+                                   ),
+                    filters = "ensembl_gene_id",
+                    values = read_cnt_df |> rownames() |> stringr::str_replace("\\.[0-9]*", ""),
+                    mart = ensembl) # %>%
+  # right_join(data.frame(ensembl_gene_id_version = read_cnt_df |> rownames() |> stringr::str_replace("\\.[0-9]*", "")),
+             # by = "ensembl_gene_id") %>%
+  # distinct(ensembl_gene_id, .keep_all = TRUE)
+
+
+# meta_genes <- getBM(attributes = c("ensembl_gene_id",
+#                                    "ensembl_gene_id_version",
+#                                    "hgnc_symbol",
+#                                    "description",
+#                                    "chromosome_name",
+#                                    "start_position",
+#                                    "end_position",
+#                                    "strand",
+#                                     "entrezgene_id"
+#                                     ),
+#                     filters = "ensembl_gene_id",
+#                     values = counts(ddsTxi) %>% rownames() %>% stringr::str_replace("\\.[0-9]*", ""),
+#                     mart = ensembl) %>%
+#   right_join(data.frame(ensembl_gene_id_version = counts(ddsTxi) %>% rownames() %>% stringr::str_replace("\\.[0-9]*", "")),
+#              by = "ensembl_gene_id") %>%
+#   distinct(ensembl_gene_id, .keep_all = TRUE)
+```
+
+# Use EnsDbs
+
+detailed db
+
+```{r}
+library(EnsDb.Hsapiens.v86) 
+ensdb_genes <- genes(EnsDb.Hsapiens.v86) |> as.data.frame()
+```
+
+# Use org.Hs.eg.db
+
+```{r}
+library(org.Hs.eg.db)
+gene_names_df <- data.frame(row.names = rownames(read_cnt_df))
+gene_names_df$symbol <- AnnotationDbi::mapIds(org.Hs.eg.db, 
+                                              keys = rownames(gene_names_df), 
+                                              keytype="ENSEMBL", 
+                                              column=c("SYMBOL"),
+                                              multiVals="first")
+
+gene_names_df$entrez_id <- AnnotationDbi::mapIds(org.Hs.eg.db, 
+                                              keys = rownames(gene_names_df), 
+                                              keytype="ENSEMBL", 
+                                              column=c("SYMBOL"),
+                                              multiVals="first")
+```
+
+# Resource
+
+<http://bioconductor.org/help/course-materials/2015/UseBioconductorFeb2015/A01.5_Annotation.html>
