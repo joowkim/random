@@ -1,0 +1,197 @@
+---
+title: "tenx scRNAseq pbmc"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(DropletTestFiles)
+library(DropletUtils)
+library(scater)
+library(EnsDb.Hsapiens.v86)
+library(org.Hs.eg.db)
+library(scran)
+```
+
+# Load data
+
+```{r}
+# http://bioconductor.org/books/3.16/OSCA.workflows/unfiltered-human-pbmcs-10x-genomics.html#interpretation-2
+
+set.seed(0)
+raw.path <- getTestFile("tenx-2.1.0-pbmc4k/1.0.0/raw.tar.gz")
+out.path <- file.path(tempdir(), "pbmc4k")
+untar(raw.path, exdir=out.path)
+
+fname <- file.path(out.path, "raw_gene_bc_matrices/GRCh38")
+sce.pbmc <- read10xCounts(fname, col.names=TRUE)
+
+## https://www.singlecellcourse.org/basic-quality-control-qc-and-exploration-of-scrna-seq-datasets.html
+# gene_names <- mapIds(org.Hs.eg.db, keys=rownames(sce.pbmc), keytype="ENSEMBL", columns="SYMBOL",column="SYMBOL")
+
+## detailed
+ensdb_genes <- genes(EnsDb.Hsapiens.v86) |> as.data.frame()
+gene_ids <- data.frame(gene_id = rowData(sce.pbmc) |> rownames() )
+merged_df <- left_join(gene_ids, ensdb_genes, by = ("gene_id"))
+  
+  
+rowData(sce.pbmc)$symbol <- merged_df$symbol
+rowData(sce.pbmc)$gene_id <- rownames(sce.pbmc)
+# table(is.na(merged_df$symbol))
+
+rowData(sce.pbmc)$uniq_name <- uniquifyFeatureNames(
+    rownames(sce.pbmc), rowData(sce.pbmc)$symbol)
+
+location <- mapIds(EnsDb.Hsapiens.v86, keys=rowData(sce.pbmc)$ID, 
+    column="SEQNAME", keytype="GENEID")
+```
+
+# QC - removal of high MT and empty droplet, 3MAD for UMI and genes in cells
+
+```{r}
+# http://bioconductor.org/books/3.16/OSCA.workflows/unfiltered-human-pbmcs-10x-genomics.html#interpretation-2
+
+e.out <- emptyDrops(counts(sce.pbmc))
+sce.pbmc <- sce.pbmc[,which(e.out$FDR <= 0.001)]
+
+unfiltered <- sce.pbmc
+
+grep("^MT-",rowData(sce.pbmc)$Symbol,value = T)
+
+stats <- perCellQCMetrics(sce.pbmc, subsets=list(Mito=which(location=="MT")))
+apply(stats, 2, summary)
+
+mt.location <- rowRanges(sce.pbmc)
+is.mito <- any(seqnames(mt.location)=="MT")
+
+high.mito <- isOutlier(stats$subsets_Mito_percent, type="higher")
+summary(high.mito)
+
+cell_qc_filters <- quickPerCellQC(stats,
+                                percent_subsets=c("subsets_Mito_percent"))
+# reason
+as.data.frame(cell_qc_filters) %>% summarise(across(everything(), sum))
+
+# sce.pbmc$discard <- cell_qc_filters$discard
+# stats$discard <- cell_qc_filters$discard
+
+
+# filter out high.mito
+sce.pbmc <- sce.pbmc[,!high.mito]
+mt_filt_stats <- perCellQCMetrics(sce.pbmc, subsets=list(Mito=which(location=="MT")))
+
+# after filtering out high.mito
+apply(perCellQCMetrics(sce.pbmc, subsets=list(Mito=which(location=="MT"))), 2, summary)
+
+colData(unfiltered) <- cbind(colData(unfiltered), stats)
+unfiltered$discard <- high.mito
+
+gridExtra::grid.arrange(
+    plotColData(unfiltered, y="sum", colour_by="discard") +
+        scale_y_log10() + ggtitle("Total count"),
+    plotColData(unfiltered, y="detected", colour_by="discard") +
+        scale_y_log10() + ggtitle("Detected features"),
+    plotColData(unfiltered, y="subsets_Mito_percent",
+        colour_by="discard") + ggtitle("Mito percent"),
+    ncol=2
+)
+
+plotColData(unfiltered, x="sum", y="subsets_Mito_percent",
+    colour_by="discard") + scale_x_log10()
+
+plotColData(unfiltered, x="sum", y="detected", colour_by="discard")
+
+# colnames(colData(sce.pbmc))
+
+# hist(
+#     sce.pbmc$total,
+#     breaks = 100
+# )
+# 
+# hist(
+#   sce.pbmc$detected,
+#   breaks = 100
+# )
+
+# plotColData(sce.pbmc, y="sum") + xlab("PBMC")
+# plotColData(sce.pbmc, y="detected") + xlab("PBMC")
+
+
+```
+## Explanatory data analysis
+
+```{r}
+colData(sce.pbmc) <- perCellQCMetrics(sce.pbmc, subsets=list(Mito=which(location=="MT")))
+plotHighestExprs(sce.pbmc, exprs_values = "counts", 
+                 feature_names_to_plot = "Symbol", colour_cells_by="detected")
+```
+
+# Normalization
+
+```{r}
+set.seed(100)
+clusters <- quickCluster(sce.pbmc)
+sce.pbmc <- computeSumFactors(sce.pbmc, cluster=clusters)
+sce.pbmc <- logNormCounts(sce.pbmc)
+
+summary(sizeFactors(sce.pbmc))
+```
+
+# Variance modelling
+
+```{r}
+set.seed(100)
+dec.pbmc <- modelGeneVarByPoisson(sce.pbmc)
+top.pbmc <- getTopHVGs(dec.pbmc, prop=0.1)
+
+plot(dec.pbmc$mean, dec.pbmc$total, pch=16, cex=0.5,
+    xlab="Mean of log-expression", ylab="Variance of log-expression")
+curfit <- metadata(dec.pbmc)
+curve(curfit$trend(x), col='dodgerblue', add=TRUE, lwd=2)
+```
+
+# Dimension reduction - PCA, tSNE and UMAP
+```{r}
+set.seed(10000)
+sce.pbmc <- denoisePCA(sce.pbmc, subset.row=top.pbmc, technical=dec.pbmc)
+
+set.seed(100000)
+sce.pbmc <- runTSNE(sce.pbmc, dimred="PCA")
+
+set.seed(1000000)
+sce.pbmc <- runUMAP(sce.pbmc, dimred="PCA")
+
+# to see a reasonable $ of PCs
+ncol(reducedDim(sce.pbmc, "PCA"))
+```
+
+
+# Clustering
+```{r}
+set.seed(0)
+g <- buildSNNGraph(sce.pbmc, use.dimred = 'PCA')
+clust <- igraph::cluster_walktrap(g)$membership
+colLabels(sce.pbmc) <- factor(clust)
+
+table(colLabels(sce.pbmc))
+```
+
+# Visulazation
+```{r}
+plotTSNE(sce.pbmc, colour_by="label")
+plotUMAP(sce.pbmc, colour_by="label")
+```
+
+# Find markers
+```{r}
+markers <- findMarkers(sce.pbmc, pval.type="some", direction="up")
+
+# http://bioconductor.org/books/3.16/OSCA.workflows/unfiltered-human-pbmcs-10x-genomics.html#interpretation-2
+marker.set <- markers[["8"]]
+as.data.frame(marker.set[1:30,1:3])
+
+plotExpression(sce.pbmc, features=c("CD14", "CD68",
+    "MNDA", "FCGR3A"), x="label", colour_by="label")
+```
+
