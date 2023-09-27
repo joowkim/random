@@ -87,3 +87,11 @@ https://www.koddi.or.kr/ud/sub1_2
 https://matthieuxmoreau.github.io/EarlyPallialNeurogenesis/
 
 https://broadinstitute.github.io/2020_scWorkshop/
+
+# illumina regarding lanes
+
+Standard workflow allows for one library pool to be loaded in all lanes of the flow cell. On the other hand, the XP workflow enables the sequencing of different library pools in each lane of the Novaseq flow cells.
+
+## How to concatenate fastq files from different lanes
+
+https://knowledge.illumina.com/software/cloud-software/software-cloud-software-reference_material-list/000002035
