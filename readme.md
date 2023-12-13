@@ -101,3 +101,7 @@ https://ucdavis-bioinformatics-training.github.io/
 https://matthieuxmoreau.github.io/EarlyPallialNeurogenesis/
 
 https://broadinstitute.github.io/2020_scWorkshop/
+
+# useful sequencing info from UC Davies
+
+https://dnatech.genomecenter.ucdavis.edu/faqs/
