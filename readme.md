@@ -83,10 +83,7 @@ https://github.com/faircloth-lab/illumiprocessor/blob/main/docs/usage.rst
 # font
 https://www.koddi.or.kr/ud/sub1_2
 
-# singlecell
-https://matthieuxmoreau.github.io/EarlyPallialNeurogenesis/
 
-https://broadinstitute.github.io/2020_scWorkshop/
 
 # illumina regarding lanes
 
@@ -95,3 +92,12 @@ Standard workflow allows for one library pool to be loaded in all lanes of the f
 ## How to concatenate fastq files from different lanes
 
 https://knowledge.illumina.com/software/cloud-software/software-cloud-software-reference_material-list/000002035
+
+# workshop materials
+
+https://ucdavis-bioinformatics-training.github.io/
+
+## singlecell
+https://matthieuxmoreau.github.io/EarlyPallialNeurogenesis/
+
+https://broadinstitute.github.io/2020_scWorkshop/
