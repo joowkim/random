@@ -105,3 +105,10 @@ https://broadinstitute.github.io/2020_scWorkshop/
 # useful sequencing info from UC Davies
 
 https://dnatech.genomecenter.ucdavis.edu/faqs/
+
+# bunch of random bioinformatics materials
+
+learngenomics.dev
+
+https://readiab.org/introduction.html
+
