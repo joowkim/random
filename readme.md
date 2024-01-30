@@ -112,3 +112,7 @@ learngenomics.dev
 
 https://readiab.org/introduction.html
 
+variancePartition
+
+https://bioconductor.org/packages/release/bioc/html/variancePartition.html
+
