@@ -116,3 +116,7 @@ variancePartition
 
 https://bioconductor.org/packages/release/bioc/html/variancePartition.html
 
+
+# Galaxy singularity repo
+
+https://depot.galaxyproject.org/singularity/
