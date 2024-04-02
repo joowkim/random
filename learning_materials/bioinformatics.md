@@ -27,3 +27,13 @@ http://rafalab.dfci.harvard.edu/pages/harvardx.html
 
 ## create design matrix
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7873980/
+
+
+# BulkRNAseq
+
+## DIY transcriptomics
+https://diytranscriptomics.com/lab/
+
+# Miscellaneous
+
+http://data-science-sequencing.github.io/
