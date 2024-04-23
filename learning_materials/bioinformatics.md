@@ -19,6 +19,13 @@ https://github.com/hbctraining
 ## OSCA
 https://bioconductor.org/books/release/OSCA/
 
+https://www.singlecellcourse.org/index.html
+
+https://matthieuxmoreau.github.io/EarlyPallialNeurogenesis/
+
+https://broadinstitute.github.io/2020_scWorkshop/
+
+https://hbctraining.github.io/scRNA-seq_online/schedule/links-to-lessons.html
 
 # A little bit about stats
 
