@@ -13,6 +13,7 @@ https://github.com/bioinformatics-core-shared-training
 ## havard
 https://github.com/hbctraining
 
+https://statomics.github.io/SGA/
 
 # SingleCellRNAseq
 
@@ -40,6 +41,8 @@ https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7873980/
 
 ## DIY transcriptomics
 https://diytranscriptomics.com/lab/
+
+https://melbournebioinformatics.github.io/MelBioInf_docs/tutorials/rna_seq_exp_design/rna_seq_experimental_design/
 
 # Miscellaneous
 
