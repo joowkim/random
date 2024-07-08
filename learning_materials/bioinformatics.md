@@ -32,6 +32,9 @@ https://broadinstitute.github.io/2020_scWorkshop/
 
 https://hbctraining.github.io/scRNA-seq_online/schedule/links-to-lessons.html
 
+https://sib-swiss.github.io/single-cell-training/
+
+
 # A little bit about stats
 
 ## edX
