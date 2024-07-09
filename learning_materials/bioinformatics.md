@@ -46,10 +46,14 @@ https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7873980/
 
 # BulkRNAseq
 
-## DIY transcriptomics
+### DIY transcriptomics
 https://diytranscriptomics.com/lab/
 
 https://melbournebioinformatics.github.io/MelBioInf_docs/tutorials/rna_seq_exp_design/rna_seq_experimental_design/
+
+### RNAseq nano course OHSU
+
+https://drive.google.com/file/d/1Y0f9LRP0hfl8r-mBkadz9V4ryxNhwbfO/view
 
 # Miscellaneous
 
