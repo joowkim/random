@@ -51,6 +51,8 @@ https://diytranscriptomics.com/lab/
 
 https://melbournebioinformatics.github.io/MelBioInf_docs/tutorials/rna_seq_exp_design/rna_seq_experimental_design/
 
+https://carpentries-incubator.github.io/bioc-rnaseq/01-intro-to-rnaseq.html
+
 ### RNAseq nano course OHSU
 
 https://drive.google.com/file/d/1Y0f9LRP0hfl8r-mBkadz9V4ryxNhwbfO/view
