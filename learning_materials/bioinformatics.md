@@ -63,3 +63,9 @@ https://drive.google.com/file/d/1Y0f9LRP0hfl8r-mBkadz9V4ryxNhwbfO/view
 # Miscellaneous
 
 http://data-science-sequencing.github.io/
+
+# Korean
+
+https://edu.insilicogen.com/kobic/
+
+https://www.laidd.org/
