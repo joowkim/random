@@ -18,6 +18,9 @@ https://statomics.github.io/SGA/
 ## bioinformatics.ca
 https://bioinformaticsdotca.github.io/
 
+## Griffithlab
+https://genviz.org/course/
+
 
 # SingleCellRNAseq
 
