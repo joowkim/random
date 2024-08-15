@@ -28,6 +28,10 @@ https://greeksharifa.github.io/blog/categories/
 
 https://bstewart.scholar.princeton.edu/teaching
 
-##
+## Practical Statistics for the Life Sciences
 
 https://statomics.github.io/PSLS/
+
+## applied multivariate data analysis
+
+https://uw.pressbooks.pub/appliedmultivariatestatistics/
