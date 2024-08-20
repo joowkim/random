@@ -21,6 +21,9 @@ https://bioinformaticsdotca.github.io/
 ## Griffithlab
 https://genviz.org/course/
 
+## Cambridge
+https://github.com/cambiotraining
+
 
 # SingleCellRNAseq
 
