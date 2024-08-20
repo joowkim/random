@@ -18,3 +18,9 @@ Lysed Cells
     • MS4A family
     • IL7R
     • Complement C3
+
+10x V2 chemistry: 50,000 reads per cell
+
+10x V3 chemistry: 20,000 reads per cell
+
+10x cell viablity is important - above 90%
