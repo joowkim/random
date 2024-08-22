@@ -72,3 +72,9 @@ http://data-science-sequencing.github.io/
 https://edu.insilicogen.com/kobic/
 
 https://www.laidd.org/
+
+# Pathway
+
+https://www.pathwaycommons.org/guide/
+
+https://www.nature.com/articles/s41596-018-0103-9
