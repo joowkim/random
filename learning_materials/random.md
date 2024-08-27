@@ -24,3 +24,28 @@ https://tobiasrausch.com/courses/atac/
 | NK cells                     | GNLY, NKG7                   |
 | Megakaryocytes               | PPBP                         |
 | Erythrocytes                 | HBB, HBA2                    |
+
+
+## Somatic variant calling
+
+tumor cell fration : `sequenza`
+
+sample swap : `NGSCheckMate`
+
+https://github.com/parklab/NGSCheckMate
+
+
+Oxo G (FFPE):
+
+G to T and C to A in the genome. sequencing artifact. `mutalisk`
+
+https://github.com/Honglab-Research/MutaliskR
+
+
+C>T substitutions (mostly at CpG context)
+
+C>A substitutions (tobacco smoking)
+
+C>T, CC>TT substitutions (UV light)
+
+Mutataion signature: `deconstructSigs`, `Mutalisk`
