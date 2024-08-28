@@ -78,3 +78,7 @@ https://www.laidd.org/
 https://www.pathwaycommons.org/guide/
 
 https://www.nature.com/articles/s41596-018-0103-9
+
+# Carpentries
+
+https://carpentries.org/community-lessons/
