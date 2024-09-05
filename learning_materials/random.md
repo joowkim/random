@@ -48,6 +48,6 @@ C>A substitutions (tobacco smoking)
 
 C>T, CC>TT substitutions (UV light)
 
-Mutataion signature: `deconstructSigs`, `Mutalisk`
+Mutataion signature: `deconstructSigs`, `Mutalisk`, `MutSigCV`
 
 copy number alteration (read-depth): `sequenza`
