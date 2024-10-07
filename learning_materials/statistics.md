@@ -35,3 +35,7 @@ https://statomics.github.io/PSLS/
 ## applied multivariate data analysis
 
 https://uw.pressbooks.pub/appliedmultivariatestatistics/
+
+## math stats
+
+https://daviddalpiaz.github.io/stat400sp18//syllabus.html
