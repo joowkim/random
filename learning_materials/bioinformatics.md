@@ -41,15 +41,6 @@ https://hbctraining.github.io/scRNA-seq_online/schedule/links-to-lessons.html
 https://sib-swiss.github.io/single-cell-training/
 
 
-# A little bit about stats
-
-## edX
-http://rafalab.dfci.harvard.edu/pages/harvardx.html
-
-## create design matrix
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7873980/
-
-
 # BulkRNAseq
 
 ### DIY transcriptomics
@@ -63,22 +54,37 @@ https://carpentries-incubator.github.io/bioc-rnaseq/01-intro-to-rnaseq.html
 
 https://drive.google.com/file/d/1Y0f9LRP0hfl8r-mBkadz9V4ryxNhwbfO/view
 
+# ATAC
+
+https://www.encodeproject.org/atac-seq/
+
+https://yiweiniu.github.io/blog/2019/03/ATAC-seq-data-analysis-from-FASTQ-to-peaks/#more
+
+
 # Miscellaneous
 
 http://data-science-sequencing.github.io/
 
-# Korean
+## Korean
 
 https://edu.insilicogen.com/kobic/
 
 https://www.laidd.org/
 
-# Pathway
+## Pathway
 
 https://www.pathwaycommons.org/guide/
 
 https://www.nature.com/articles/s41596-018-0103-9
 
-# Carpentries
+## Carpentries
 
 https://carpentries.org/community-lessons/
+
+## A little bit about stats
+
+### edX
+http://rafalab.dfci.harvard.edu/pages/harvardx.html
+
+### create design matrix
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7873980/
