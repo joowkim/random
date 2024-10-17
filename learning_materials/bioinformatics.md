@@ -24,6 +24,9 @@ https://genviz.org/course/
 ## Cambridge
 https://github.com/cambiotraining
 
+## Rockefeller Uni
+https://rockefelleruniversity.github.io/training.html
+
 
 # SingleCellRNAseq
 
