@@ -60,6 +60,7 @@ https://www.encodeproject.org/atac-seq/
 
 https://yiweiniu.github.io/blog/2019/03/ATAC-seq-data-analysis-from-FASTQ-to-peaks/#more
 
+https://rockefelleruniversity.github.io/RU_ATACseq/
 
 # Miscellaneous
 
