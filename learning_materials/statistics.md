@@ -43,3 +43,9 @@ https://daviddalpiaz.github.io/stat400sp18//syllabus.html
 ## Germán Rodríguez
 
 https://grodri.github.io/
+
+## Regression Modeling Strategies
+
+https://hbiostat.org/rmsc/
+
+https://hbiostat.org/doc/rms/4day.html
