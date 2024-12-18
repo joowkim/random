@@ -43,6 +43,7 @@ https://hbctraining.github.io/scRNA-seq_online/schedule/links-to-lessons.html
 
 https://sib-swiss.github.io/single-cell-training/
 
+https://bioinformatics-core-shared-training.github.io/SingleCell_RNASeq_Dec24/
 
 # BulkRNAseq
 
