@@ -30,7 +30,7 @@ https://bstewart.scholar.princeton.edu/teaching
 
 ## Practical Statistics for the Life Sciences
 
-https://statomics.github.io/PSLS/
+https://statomics.github.io/pages/teaching.html
 
 ## applied multivariate data analysis
 
