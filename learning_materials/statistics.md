@@ -49,3 +49,13 @@ https://grodri.github.io/
 https://hbiostat.org/rmsc/
 
 https://hbiostat.org/doc/rms/4day.html
+
+## DOE
+
+https://www.theopeneducator.com/doe
+
+https://www.youtube.com/playlist?list=PLW-oQRxLODMcYEFXP4eg5EXBl-0hsTSe1
+
+https://www.youtube.com/playlist?list=PLxfm_owPoF2FCvQPrt0RLsn6mOyAJ1rb_
+
+https://www.youtube.com/playlist?list=PL3HnRmbJODOgk92M25QFOLfr7o5aXeklk
