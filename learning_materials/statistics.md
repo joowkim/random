@@ -52,6 +52,8 @@ https://hbiostat.org/doc/rms/4day.html
 
 ## DOE
 
+https://www.youtube.com/@merkeslectures6710/videos
+
 https://www.theopeneducator.com/doe
 
 https://www.youtube.com/playlist?list=PLW-oQRxLODMcYEFXP4eg5EXBl-0hsTSe1
