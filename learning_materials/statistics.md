@@ -6,6 +6,8 @@ https://www.huber.embl.de/msmb/
 
 http://rafalab.dfci.harvard.edu/pages/harvardx.html
 
+https://genomicsclass.github.io/book/
+
 # QCBS R workshot materials
 
 https://r.qcbs.ca/workshops/
