@@ -55,9 +55,9 @@ plot_topN_sig_genes <- function(topN_vector,
                                 show_rownames = TRUE,
                                 show_colnames = TRUE,
                                 annotation_col = NULL,
-                                title = "Top Significant Genes/Proteins") {
-  # Load the required package
-  library(ComplexHeatmap)
+                                title = "Top Significant Genes/Proteins",
+                                legend_title = "Mean centered"
+                                ) {
   
   # Sanity checks
   missing_genes <- setdiff(topN_vector, rownames(normalize_mat))
@@ -82,12 +82,14 @@ plot_topN_sig_genes <- function(topN_vector,
   color_limits <- range(selected_mat, na.rm = TRUE)
   color_mid <- 0
   color_breaks <- seq(color_limits[1], color_limits[2], length.out = 100)
-  colors <- colorRampPalette(c("blue", "white", "red"))(100)
+  # colors <- colorRampPalette(c("blue", "white", "red"))(100)
+  
+  heatmap_legend_param = list(title = legend_title)
   
   # Plot heatmap
-  ComplexHeatmap::pheatmap(
+ p <- ComplexHeatmap::pheatmap(
     mat = selected_mat,
-    color = colors,
+    # color = colors,
     breaks = color_breaks,
     cluster_rows = cluster_rows,
     cluster_cols = cluster_cols,
@@ -95,43 +97,13 @@ plot_topN_sig_genes <- function(topN_vector,
     show_colnames = show_colnames,
     annotation_col = annotation_col,
     main = title,
+    heatmap_legend_param = heatmap_legend_param,
     fontsize_row = 10,
     fontsize_col = 10,
-    legend_labels = "Mean centered"
+      
   )
+ return (p)
 }
 
 
-plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1) {
   
-  # remove genes with NA for chosen pval_id
-  df <- df |> tidyr::drop_na({{pval_id}})
-  
-  # select top genes by significance
-  top_genes <- df |>
-    dplyr::arrange(.data[[pval_id]]) |>
-    dplyr::slice_head(n = 10)
-  
-  # significance flag
-  df$Sig <- ifelse(df[[pval_id]] <= pval_cutoff, "Sig", "NS")
-  
-  # transform p-values
-  df[[pval_id]] <- -log10(df[[pval_id]])
-  
-  # volcano plot
-  p <- ggplot(df, aes(x = .data[[logfc_id]], y = .data[[pval_id]])) +
-    geom_point(aes(color = Sig), size = 0.6) +
-    scale_color_manual(values = c("black", "salmon")) +
-    theme_bw() +
-    ylab(stringr::str_glue("-log10({pval_id})")) +
-    ggrepel::geom_text_repel(
-      data = df |> dplyr::filter(.data[[uniq_id]] %in% top_genes[[uniq_id]]),
-      aes(label = .data[[uniq_id]]),
-      max.overlaps = Inf,
-      min.segment.length = 0
-    ) +
-    ggprism::scale_color_prism() +
-    ggprism::scale_fill_prism()
-  
-  return (p)
-}
