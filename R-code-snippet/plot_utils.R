@@ -35,7 +35,9 @@ plot_pca <- function(pca_obj,
     ylab(paste0(pc_comp2, ": ", pca_eigen_val[as.numeric(gsub("PC", "", pc_comp2))], "%")) +
     ggtitle(title) +
     theme_bw() +
-    theme(aspect.ratio = 1, text = element_text(size = 15))
+    theme(aspect.ratio = 1, text = element_text(size = 15))+
+    ggprism::scale_color_prism() +
+    ggprism::scale_fill_prism()
   
   # add labels *only if provided*
   if (!is.null(label)) {
