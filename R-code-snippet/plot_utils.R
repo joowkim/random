@@ -109,36 +109,23 @@ plot_topN_sig_genes <- function(topN_vector,
 
 
 plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1, show_labels = TRUE) {
-
-  # remove genes with NA for chosen pval_id
   df <- df |> tidyr::drop_na({{pval_id}})
 
-  # select top genes by significance
   top_genes <- df |>
     dplyr::arrange(.data[[pval_id]]) |>
     dplyr::slice_head(n = 10)
 
-  # significance flag
   df$Sig <- ifelse(df[[pval_id]] <= pval_cutoff, "Sig", "NS")
-
-  # transform p-values
   df[[pval_id]] <- -log10(df[[pval_id]])
 
-  # volcano plot
   p <- ggplot(df, aes(x = .data[[logfc_id]], y = .data[[pval_id]])) +
     geom_point(aes(color = Sig), size = 0.6) +
     scale_color_manual(values = c("black", "salmon")) +
     theme_bw() +
     ylab(stringr::str_glue("-log10({pval_id})")) +
-    ggrepel::geom_text_repel(
-      data = df |> dplyr::filter(.data[[uniq_id]] %in% top_genes[[uniq_id]]),
-      aes(label = .data[[uniq_id]]),
-      max.overlaps = Inf,
-      min.segment.length = 0
-    ) +
     ggprism::scale_color_prism() +
     ggprism::scale_fill_prism()
-  
+
   if (show_labels) {
     p <- p + ggrepel::geom_text_repel(
       data = df |> dplyr::filter(.data[[uniq_id]] %in% top_genes[[uniq_id]]),
@@ -146,5 +133,5 @@ plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1, show
     )
   }
 
-  return (p)
+  return(p)
 }
