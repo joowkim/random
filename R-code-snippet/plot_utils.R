@@ -109,12 +109,8 @@ plot_topN_sig_genes <- function(topN_vector,
 
 
 plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1, show_labels = TRUE) {
+  
   df <- df |> tidyr::drop_na({{pval_id}})
-
-  top_genes <- df |>
-    dplyr::arrange(.data[[pval_id]]) |>
-    dplyr::slice_head(n = 10)
-
   df$Sig <- ifelse(df[[pval_id]] <= pval_cutoff, "Sig", "NS")
   df[[pval_id]] <- -log10(df[[pval_id]])
 
@@ -126,11 +122,17 @@ plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1, show
     ggprism::scale_color_prism() +
     ggprism::scale_fill_prism()
 
+  # Force labels to empty if show_labels = FALSE
   if (show_labels) {
+    top_genes <- df |>
+      dplyr::arrange(.data[[pval_id]]) |>
+      dplyr::slice_head(n = 10)
     p <- p + ggrepel::geom_text_repel(
       data = df |> dplyr::filter(.data[[uniq_id]] %in% top_genes[[uniq_id]]),
       aes(label = .data[[uniq_id]])
     )
+  } else {
+    message("Labels are disabled")
   }
 
   return(p)
