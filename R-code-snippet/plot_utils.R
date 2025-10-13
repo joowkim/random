@@ -108,7 +108,7 @@ plot_topN_sig_genes <- function(topN_vector,
 }
 
 
-plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1) {
+plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1, show_labels = TRUE) {
 
   # remove genes with NA for chosen pval_id
   df <- df |> tidyr::drop_na({{pval_id}})
@@ -138,6 +138,13 @@ plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1) {
     ) +
     ggprism::scale_color_prism() +
     ggprism::scale_fill_prism()
+  
+  if (show_labels) {
+    p <- p + ggrepel::geom_text_repel(
+      data = df |> dplyr::filter(.data[[uniq_id]] %in% top_genes[[uniq_id]]),
+      aes(label = .data[[uniq_id]])
+    )
+  }
 
   return (p)
 }
