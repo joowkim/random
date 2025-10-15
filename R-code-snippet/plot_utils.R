@@ -121,15 +121,14 @@ plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1, show
     ylab(stringr::str_glue("-log10({pval_id})")) +
     ggprism::scale_color_prism() +
     ggprism::scale_fill_prism() +
-    
-    # Add x-axis ticks every 1 unit (adjust 'by' as needed)
-    scale_x_continuous(breaks = seq(
-      from = floor(min(df[[logfc_id]], na.rm = TRUE)),
-      to   = ceiling(max(df[[logfc_id]], na.rm = TRUE)),
-      by   = 1
-    )) +
+    scale_x_continuous(
+      breaks = seq(
+        from = floor(min(df[[logfc_id]], na.rm = TRUE)),
+        to   = ceiling(max(df[[logfc_id]], na.rm = TRUE)),
+        by   = 1
+      )
+    )
 
-  # Force labels to empty if show_labels = FALSE
   if (show_labels) {
     top_genes <- df |>
       dplyr::arrange(.data[[pval_id]]) |>
