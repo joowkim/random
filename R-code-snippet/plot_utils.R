@@ -143,3 +143,30 @@ plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1, show
 
   return(p)
 }
+
+
+plot_rle <- function(normal_mat, meta, sample_name) {
+  
+  ## log2 intensities matrix needed
+  df <- normal_mat |> 
+  as.data.frame() |> 
+  pivot_longer(
+    cols = everything(),         # all columns to be pivoted
+    names_to = "Sample",         # new column for the old column names
+    values_to = "log2_intensity"          # new column for the numeric values
+    ) |>
+  left_join(meta, by = sample_name)
+
+ p<- ggboxplot(narmalized_mat_median_centered_df, 
+               x = "Sample", 
+               y="log2_intensity", 
+               color = "Group", 
+               x.text.angle = 45, 
+               ggtheme=theme_bw(), 
+               outliers = F, 
+               bxp.errorbar = TRUE) + 
+  geom_hline(yintercept = 0, color = "red") + 
+  ylab("Median centered log2 intensities")
+
+  return (p)
+}
