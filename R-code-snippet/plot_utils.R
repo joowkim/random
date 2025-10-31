@@ -157,7 +157,7 @@ plot_rle <- function(normal_mat, meta, sample_name) {
     ) |>
   left_join(meta, by = sample_name)
 
- p<- ggboxplot(narmalized_mat_median_centered_df, 
+ p<- ggboxplot(df, 
                x = "Sample", 
                y="log2_intensity", 
                color = "Group", 
