@@ -108,40 +108,33 @@ plot_topN_sig_genes <- function(topN_vector,
 }
 
 
-plot_volcano <- function(df, uniq_id, pval_id, logfc_id, pval_cutoff = 0.1, show_labels = TRUE) {
+plot_volcano <- function(df, uniq_id, logfc_id, pval_id, pval_cutoff = 0.05, top_n = 10) {
   
-  df <- df |> tidyr::drop_na({{pval_id}})
-  df$Sig <- ifelse(df[[pval_id]] <= pval_cutoff, "Sig", "NS")
-  df[[pval_id]] <- -log10(df[[pval_id]])
-
-  p <- ggplot(df, aes(x = .data[[logfc_id]], y = .data[[pval_id]])) +
+  # drop NA p-values
+  df <- df |> drop_na({{pval_id}})
+  
+  # define significance
+  df$Sig <- ifelse(df[[pval_id]] < pval_cutoff, "Sig", "NS")
+  
+  # compute -log10 p-value
+  df$neg_log10_pval <- -log10(df[[pval_id]])
+  
+  # get top N significant genes for labeling
+  top_genes <- df |> arrange(.data[[pval_id]]) |> slice_head(n = top_n)
+  
+  # volcano plot
+  ggplot(df, aes(x = .data[[logfc_id]], y = neg_log10_pval)) +
     geom_point(aes(color = Sig), size = 0.6) +
     scale_color_manual(values = c("black", "salmon")) +
+    geom_text_repel(
+      data = top_genes,
+      aes(label = .data[[uniq_id]]),
+      max.overlaps = Inf,
+      size = 3
+    ) +
     theme_bw() +
     ylab(stringr::str_glue("-log10({pval_id})")) +
-    ggprism::scale_color_prism() +
-    ggprism::scale_fill_prism() +
-    scale_x_continuous(
-      breaks = seq(
-        from = floor(min(df[[logfc_id]], na.rm = TRUE)),
-        to   = ceiling(max(df[[logfc_id]], na.rm = TRUE)),
-        by   = 1
-      )
-    )
-
-  if (show_labels) {
-    top_genes <- df |>
-      dplyr::arrange(.data[[pval_id]]) |>
-      dplyr::slice_head(n = 10)
-    p <- p + ggrepel::geom_text_repel(
-      data = df |> dplyr::filter(.data[[uniq_id]] %in% top_genes[[uniq_id]]),
-      aes(label = .data[[uniq_id]])
-    )
-  } else {
-    message("Labels are disabled")
-  }
-
-  return(p)
+    xlab(logfc_id)
 }
 
 
