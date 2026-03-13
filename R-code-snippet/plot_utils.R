@@ -142,24 +142,30 @@ plot_rle <- function(normal_mat, meta, sample_name) {
   
   ## log2 intensities matrix needed
   df <- normal_mat |> 
-  as.data.frame() |> 
-  pivot_longer(
-    cols = everything(),         # all columns to be pivoted
-    names_to = "Sample",         # new column for the old column names
-    values_to = "log2_intensity"          # new column for the numeric values
+    as.data.frame() |> 
+    pivot_longer(
+      cols = everything(),
+      names_to = "Sample",
+      values_to = "log2_intensity"
     ) |>
-  left_join(meta, by = sample_name)
+    left_join(meta, by = sample_name)
 
- p<- ggboxplot(df, 
-               x = "Sample", 
-               y="log2_intensity", 
-               color = "Group", 
-               x.text.angle = 45, 
-               ggtheme=theme_bw(), 
-               outliers = F, 
-               bxp.errorbar = TRUE) + 
-  geom_hline(yintercept = 0, color = "red") + 
-  ylab("Median centered log2 intensities")
+  p <- ggboxplot(
+        df,
+        x = "Sample",
+        y = "log2_intensity",
+        color = "Group",
+        x.text.angle = 45,
+        ggtheme = theme_bw(),
+        outliers = FALSE,
+        bxp.errorbar = TRUE
+      ) +
+      geom_hline(yintercept = 0, color = "red") +
+      scale_y_continuous(
+        limits = c(-3, 3),
+        breaks = seq(-3, 3, by = 1)
+      ) +
+      ylab("Median centered log2 intensities")
 
-  return (p)
+  return(p)
 }
