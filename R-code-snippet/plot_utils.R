@@ -1,49 +1,45 @@
 # this function take a prcomp object as input.
-plot_pca <- function(pca_obj, 
-                     pc_comp1 = "PC1", 
-                     pc_comp2 = "PC2", 
-                     meta_df, 
-                     sample_id = "Sample", 
-                     color = NULL, 
-                     shape = NULL, 
+plot_pca <- function(pca_obj,
+                     pc_comp1 = "PC1",
+                     pc_comp2 = "PC2",
+                     meta_df,
+                     sample_id = "Sample",
+                     color = NULL,
+                     shape = NULL,
                      label = NULL,
                      title = "PCA plot (log2 intensities)") {
-  
-  library(dplyr)
-  library(ggplot2)
-  library(ggrepel)
-  library(tibble)
-  
+
   # get PCA scores
-  pca_scores <- pca_obj$x %>% as.data.frame() %>% rownames_to_column(sample_id)
-  
+  pca_scores <- pca_obj$x |> as.data.frame() |> rownames_to_column(sample_id)
+
   # get explained variance (%)
   pca_eigen_val <- round(summary(pca_obj)$importance[2, ] * 100, 1)
-  
+
   # merge PCA scores and metadata
   pca_merged_df <- left_join(pca_scores, meta_df, by = sample_id)
-  
-  # build aesthetics dynamically
-  aes_mapping <- aes_string(x = pc_comp1, y = pc_comp2)
-  if (!is.null(color)) aes_mapping <- modifyList(aes_mapping, aes_string(color = color))
-  if (!is.null(shape)) aes_mapping <- modifyList(aes_mapping, aes_string(shape = shape))
-  
+
+  # aes() uses NSE, so bare column names can't come from string variables directly.
+  # .data[[col]] is the tidyverse pronoun that lets us index a column by string at evaluation time.
+  # modifyList() merges additional aesthetics (color, shape) into the base mapping when provided.
+  aes_mapping <- aes(x = .data[[pc_comp1]], y = .data[[pc_comp2]])
+  if (!is.null(color)) aes_mapping <- modifyList(aes_mapping, aes(color = .data[[color]]))
+  if (!is.null(shape)) aes_mapping <- modifyList(aes_mapping, aes(shape = .data[[shape]]))
+
   # construct base plot
   p <- ggplot(pca_merged_df, aes_mapping) +
     geom_point(size = 3) +
-    xlab(paste0(pc_comp1, ": ", pca_eigen_val[as.numeric(gsub("PC", "", pc_comp1))], "%")) +
-    ylab(paste0(pc_comp2, ": ", pca_eigen_val[as.numeric(gsub("PC", "", pc_comp2))], "%")) +
+    xlab(paste0(pc_comp1, ": ", pca_eigen_val[[pc_comp1]], "%")) +
+    ylab(paste0(pc_comp2, ": ", pca_eigen_val[[pc_comp2]], "%")) +
     ggtitle(title) +
     theme_bw() +
-    theme(aspect.ratio = 1, text = element_text(size = 15))+
-    ggprism::scale_color_prism() +
-    ggprism::scale_fill_prism()
-  
-  # add labels *only if provided*
+    theme(aspect.ratio = 1, text = element_text(size = 15))
+
+  if (!is.null(color)) p <- p + ggprism::scale_color_prism()
+
   if (!is.null(label)) {
-    p <- p + ggrepel::geom_text_repel(aes_string(label = label), box.padding = 0.5, max.overlaps = 20)
+    p <- p + ggrepel::geom_text_repel(aes(label = .data[[label]]), box.padding = 0.5, max.overlaps = 20)
   }
-  
+
   return(p)
 }
 
@@ -109,23 +105,23 @@ plot_topN_sig_genes <- function(topN_vector,
 
 
 plot_volcano <- function(df, uniq_id, logfc_id, pval_id, pval_cutoff = 0.05, top_n = 10) {
-  
+
   # drop NA p-values
-  df <- df |> drop_na({{pval_id}})
-  
+  df <- df |> drop_na(all_of(pval_id))
+
   # define significance
   df$Sig <- ifelse(df[[pval_id]] < pval_cutoff, "Sig", "NS")
-  
+
   # compute -log10 p-value
   df$neg_log10_pval <- -log10(df[[pval_id]])
-  
+
   # get top N significant genes for labeling
   top_genes <- df |> arrange(.data[[pval_id]]) |> slice_head(n = top_n)
-  
+
   # volcano plot
   ggplot(df, aes(x = .data[[logfc_id]], y = neg_log10_pval)) +
     geom_point(aes(color = Sig), size = 0.6) +
-    scale_color_manual(values = c("black", "salmon")) +
+    scale_color_manual(values = c("NS" = "black", "Sig" = "salmon")) +
     geom_text_repel(
       data = top_genes,
       aes(label = .data[[uniq_id]]),
