@@ -31,7 +31,7 @@ plot_pca <- function(pca_obj,
     xlab(paste0(pc_comp1, ": ", pca_eigen_val[[pc_comp1]], "%")) +
     ylab(paste0(pc_comp2, ": ", pca_eigen_val[[pc_comp2]], "%")) +
     ggtitle(title) +
-    theme_classic() +
+    theme_bw() +
     theme(aspect.ratio = 1, text = element_text(size = 15))
 
   if (!is.null(color)) p <- p + ggprism::scale_color_prism()
@@ -128,7 +128,7 @@ plot_volcano <- function(df, uniq_id, logfc_id, pval_id, pval_cutoff = 0.05, top
       max.overlaps = Inf,
       size = 3
     ) +
-    theme_classic() +
+    theme_bw() +
     ylab(stringr::str_glue("-log10({pval_id})")) +
     xlab(logfc_id) + 
     ggtitle(title)
