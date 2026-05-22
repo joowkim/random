@@ -34,7 +34,7 @@ plot_pca <- function(pca_obj,
     theme_bw() +
     theme(aspect.ratio = 1, text = element_text(size = 15))
 
-  if (!is.null(color)) p <- p + ggprism::scale_color_prism()
+  if (!is.null(color)) p <- p + scale_color_viridis_d()
 
   if (!is.null(label)) {
     p <- p + ggrepel::geom_text_repel(aes(label = .data[[label]]), box.padding = 0.5, max.overlaps = 20)
