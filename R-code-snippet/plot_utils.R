@@ -31,7 +31,6 @@ plot_pca <- function(pca_obj,
     xlab(paste0(pc_comp1, ": ", pca_eigen_val[[pc_comp1]], "%")) +
     ylab(paste0(pc_comp2, ": ", pca_eigen_val[[pc_comp2]], "%")) +
     ggtitle(title) +
-    theme_bw() +
     theme(aspect.ratio = 1, text = element_text(size = 15))
 
   if (!is.null(color)) p <- p + scale_color_viridis_d()
